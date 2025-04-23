@@ -3,14 +3,27 @@ from core.configs import settings
 from api.v1.api import api_router
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="API NBA Players")
+app = FastAPI(title="API personagens de tvd")
 
-origins = ["http://localhost", "http://localhost:8080", "http://127.0.0.1:5500"]
+# CORS settings para permitir chamadas do front-end
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "http://127.0.0.1:5500"
+]
 
-app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+# Incluindo as rotas da API
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
-if __name__ == '__main__':
+# Isso garante que funcione tanto com `python main.py` quanto com `uvicorn main:app --reload`
+if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8001, log_level="info", reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="info", reload=True)

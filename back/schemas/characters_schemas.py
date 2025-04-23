@@ -1,8 +1,8 @@
 from typing import Optional
 from pydantic import BaseModel
-from back.schemas.factions_schemas import FactionsSchema  # Alterado para importar o novo schema de facções, se necessário
+from schemas.factions_schemas import FactionsSchema  # Corrigido: removido 'back.'
 
-class CharactersSchema(BaseModel):  # Renomeado para CharactersSchema
+class CharacterSchema(BaseModel):  # Renomeado para CharactersSchema
     id: Optional[int]
     name: str
     age: int
@@ -15,6 +15,6 @@ class CharactersSchema(BaseModel):  # Renomeado para CharactersSchema
     class Config:
         orm_mode = True
 
-class CharactersFactionsSchema(CharactersSchema):  # Renomeado para CharactersFactionsSchema
+class CharactersFactionsSchema(CharacterSchema):  # Renomeado para CharactersFactionsSchema
     class Config:
         orm_mode = True
