@@ -1,9 +1,9 @@
-from core.base import DBBaseModel  # Base correta
-from sqlalchemy import Column, String, Integer, Text, ForeignKey
+from core.configs import settings  # Base correta
+from sqlalchemy import Column, String, Integer, Text, ForeignKey, Float
 from sqlalchemy.orm import relationship
 
 
-class GroupsModel(DBBaseModel):
+class GroupsModel(settings.DBBaseModel):
     __tablename__ = "VDGroups"  # Grupos como "Família Salvatore", "Bruxas", "Doppelgängers", etc.
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -14,11 +14,15 @@ class GroupsModel(DBBaseModel):
     characters = relationship("CharactersModel", back_populates="group", lazy="selectin")
 
 
-class CharactersModel(DBBaseModel):
+class CharactersModel(settings.DBBaseModel):
     __tablename__ = "VDCharacters"  # Personagens principais
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(256), nullable=False)  # Nome do personagem
+    age = Column(Integer())
+    height = Column(Float())
+    role = Column(String(256))
+    origin = Column(String(256))
     description = Column(Text, nullable=True)  # Descrição do personagem
     image = Column(String(256), nullable=True)  # URL ou path da imagem do personagem
     group_id = Column(Integer, ForeignKey("VDGroups.id"))  # Chave estrangeira para o grupo

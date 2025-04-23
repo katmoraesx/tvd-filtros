@@ -6,18 +6,20 @@ from models.characters_models import CharactersModel  # Correção aqui
 from schemas.characters_schemas import CharacterSchema 
 from core.deps import get_session
 
-router = APIRouter(
-    prefix="/api/v1/characters",  # Caminho base
-    tags=["Characters"]           # Tag usada na documentação Swagger
-)
+router = APIRouter()
 
 # Criar personagem
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=CharacterSchema)
 async def post_character(character: CharacterSchema, db: AsyncSession = Depends(get_session)):
     new_character = CharactersModel(  # Correção aqui
         name=character.name,
+        age = character.age,
+        height = character.height,
+        role = character.role,
+        origin = character.origin,
         description=character.description,
-        image=character.image
+        image=character.image,
+        group_id = character.group_id
     )
 
     db.add(new_character)
