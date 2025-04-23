@@ -1,13 +1,16 @@
-from pydantic.v1 import BaseSettings
+from pydantic import BaseSettings
 from sqlalchemy.orm import declarative_base
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
-    #automatico
-    DB_URL: str = "mysql+asyncmy://root@127.0.0.1:3306/playersNBA"
-    DBBaseModel = declarative_base()
-    
-class Config:
-    case_sensitive = Falseenv_file = "env"
-    
-settings = Settings()        
+    DB_URL: str = "mysql+asyncmy://root@127.0.0.1:3306/thevampirediaries"  # novo nome de banco
+
+    class Config:
+        case_sensitive = True
+        env_file = ".env"
+
+# Instância das configurações
+settings = Settings()
+
+# Declarative base global para os models
+DBBaseModel = declarative_base()
