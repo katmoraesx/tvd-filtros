@@ -11,7 +11,7 @@ class CharacterSchema(BaseModel):  # Renomeado para CharactersSchema
     origin: str  # "country" alterado para "origin", representando o lugar de origem no universo de The Vampire Diaries
     description: str
     image: str
-    group_id: Optional[int]  # Alterado de "team_id" para "faction_id" para representar a facção no universo de "The Vampire Diaries"
+    #group_id: Optional[int]  # Alterado de "team_id" para "faction_id" para representar a facção no universo de "The Vampire Diaries"
 
     class Config:
         orm_mode = True

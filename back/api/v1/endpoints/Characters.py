@@ -19,7 +19,7 @@ async def post_character(character: CharacterSchema, db: AsyncSession = Depends(
         origin = character.origin,
         description=character.description,
         image=character.image,
-        group_id = character.group_id
+        #group_id = character.group_id
     )
 
     db.add(new_character)

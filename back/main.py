@@ -1,20 +1,17 @@
 from fastapi import FastAPI
 from core.configs import settings
 from api.v1.api import api_router
+
+
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="API personagens de tvd")
 
 # CORS settings para permitir chamadas do front-end
-origins = [
-    "http://localhost",
-    "http://localhost:8080",
-    "http://127.0.0.1:5500"
-]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
