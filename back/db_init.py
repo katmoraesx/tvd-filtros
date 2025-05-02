@@ -1,14 +1,10 @@
-# db_init.py
 import asyncio
-import time
-
-# Aguarda 10 segundos antes de tentar conexão (ajuste se necessário)
-time.sleep(20)
-
 from criar_tabelas import create_tables
 from popular_banco import popular
+from wait_db import wait_for_db  # ← nova importação
 
 async def init():
+    await wait_for_db()          # ← espera o banco estar pronto
     await create_tables()
     await popular()
 
