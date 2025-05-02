@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  api:
+    build: ./back
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - ./back:/app
+
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: thevampirediaries
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  frontend:
+    build: ./front/characters-tvd
+    container_name: frontend_app
+    ports:
+      - "3000:80"  # 3000 local → 80 no container (nginx)
+    depends_on:
+      - api
+
+volumes:
+  mysql_data:

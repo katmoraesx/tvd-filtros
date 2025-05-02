@@ -16,7 +16,9 @@ class CharactersModel(settings.DBBaseModel):
     image = Column(String(256), nullable=True)  # URL ou path da imagem do personagem
     #group_id = Column(Integer, ForeignKey("VDGroups.id"))  # Chave estrangeira para o grupo
 
-    #group = relationship("GroupsModel", back_populates="characters", lazy="selectin")
+    #group = relationship("GroupsModel", back_populates="characters", lazy="selectin")knbn
+    
+    
 
 
 

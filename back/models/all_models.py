@@ -1,1 +1,1 @@
-from models.characters_models import CharactersModel, GroupsModel
+from models.characters_models import CharactersModel
