@@ -13,7 +13,6 @@ services:
     volumes:
       - ./back:/app
 
-
   db:
     image: mysql:8.0
     container_name: mysql_db
@@ -30,9 +29,20 @@ services:
     build: ./front/characters-tvd
     container_name: frontend_app
     ports:
-      - "3000:80"  # 3000 local → 80 no container (nginx)
+      - "3000:80"
     depends_on:
       - api
+
+  db_init:
+    build:
+      context: ./back
+    command: python db_init.py
+    depends_on:
+      - db
+      - api
+    restart: "no"
+    env_file:
+      - .env
 
 volumes:
   mysql_data:
