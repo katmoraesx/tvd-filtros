@@ -13,14 +13,14 @@ function App() {
       const response = await axios.get("http://127.0.0.1:8000/api/v1/characters");
       setCharacters(response.data);
     } catch (error) {
-      console.error("Erro ao buscar personagens:", error);
+      console.error("Error searching for characters:", error);
     }
   };
 
   const handleCreate = async () => {
-    const name = prompt("Nome do personagem:");
-    const description = prompt("Descrição:");
-    const image = prompt("URL da imagem:");
+    const name = prompt("Character name:");
+    const description = prompt("Description:");
+    const image = prompt("Image URL:");
 
     if (name && description && image) {
       try {
@@ -35,16 +35,16 @@ function App() {
         });
         setCharacters((prev) => [...prev, response.data]);
       } catch (error) {
-        console.error("Erro ao criar personagem:", error);
+        console.error("Error when creating characters:", error);
       }
     }
   };
 
   const handleEdit = async (id) => {
     const character = characters.find((char) => char.id === id);
-    const name = prompt("Novo nome:", character.name);
-    const description = prompt("Nova descrição:", character.description);
-    const image = prompt("Nova imagem:", character.image);
+    const name = prompt("New name:", character.name);
+    const description = prompt("New description:", character.description);
+    const image = prompt("New image:", character.image);
 
     if (name && description && image) {
       try {
@@ -58,18 +58,18 @@ function App() {
           prev.map((char) => (char.id === id ? response.data : char))
         );
       } catch (error) {
-        console.error("Erro ao editar personagem:", error);
+        console.error("Error when editing character:", error);
       }
     }
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Tem certeza que deseja excluir este personagem?")) {
+    if (confirm("Are you sure you want delete this character?")) {
       try {
         await axios.delete(`http://127.0.0.1:8000/api/v1/characters/${id}`);
         setCharacters((prev) => prev.filter((char) => char.id !== id));
       } catch (error) {
-        console.error("Erro ao excluir personagem:", error);
+        console.error("Error when delete character:", error);
       }
     }
   };
@@ -78,9 +78,9 @@ function App() {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/api/v1/characters/${id}`);
       const char = response.data;
-      alert(`Nome: ${char.name}\nDescrição: ${char.description}\nOrigem: ${char.origin}`);
+      alert(`Name: ${char.name}\nDescription: ${char.description}\nOrigin: ${char.origin}`);
     } catch (error) {
-      console.error("Erro ao visualizar personagem:", error);
+      console.error("Error when viewing character:", error);
     }
   };
 
@@ -92,31 +92,31 @@ function App() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div>
             <h1 className="text-4xl font-bold text-violet-300">The Vampire Diaries</h1>
-            <p className="text-sm text-violet-100">Explore os personagens icônicos da série</p>
+            <p className="text-sm text-violet-100">Explore the series' iconic characters</p>
           </div>
           <button
             onClick={handleCreate}
             className="bg-violet-700 hover:bg-violet-800 text-white font-medium px-4 py-2 rounded-md transition duration-300 shadow-md"
           >
-            + Novo Personagem
+            + New Character
           </button>
         </div>
       </header>
 
-      {/* Conteúdo Principal */}
+      {/* Main content */}
       <main className="flex-1 p-8 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
         <section>
-          <h2 className="text-2xl font-semibold mb-4 border-b border-violet-400 pb-2 text-violet-200">Sobre a Série</h2>
+          <h2 className="text-2xl font-semibold mb-4 border-b border-violet-400 pb-2 text-violet-200">About the serie</h2>
           <p className="text-gray-300 leading-relaxed">
-            "The Vampire Diaries" é uma série que mistura romance, drama e suspense sobrenatural,
-            centrada na cidade fictícia de Mystic Falls. Com vampiros, bruxas, lobisomens e outros seres,
-            a série conquistou fãs ao redor do mundo com sua narrativa intensa e personagens inesquecíveis.
+            "The Vampire Diaries" It is a series that mixes romances, supernatural drama and suspense,
+            centered on the fictional town of Mystic Falls. With vampires, witches, werewolves and other beings,
+            the series has won fans around the world with its intense narrative and unforgettable characters.
           </p>
-          <h3 className="mt-6 text-xl font-semibold text-violet-300">Destaques dos Personagens:</h3>
+          <h3 className="mt-6 text-xl font-semibold text-violet-300">Highlight of the characters:</h3>
           <ul className="list-disc list-inside text-gray-400">
-            <li>Vampiros com histórias complexas</li>
-            <li>Relações intensas e transformadoras</li>
-            <li>Conflitos sobrenaturais entre facções</li>
+            <li>Vampires with complex stories</li>
+            <li>Intense and transformative relationships</li>
+            <li>supernatural conflicts between factions</li>
           </ul>
         </section>
 
@@ -131,14 +131,14 @@ function App() {
         </section>
       </main>
 
-      {/* Cards de Personagens */}
-{/* Cards de Personagens */}
+      {/* Characters cards */}
+{/* Characters cards */}
 <section className="p-8 max-w-7xl mx-auto">
   <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 pb-2 text-violet-800/">Personagens</h2>
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
     {characters.map((char) => (
       <div key={char.id} className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 flex flex-col h-[400px] w-[280px]">
-        {/* Aumentando o tamanho da imagem */}
+        {/* Increasing image size */}
         <img src={char.image} alt={char.name} className="w-full h-[240px] object-cover" />
         <div className="p-4 flex-1 flex flex-col justify-between">
           <div>
@@ -146,7 +146,7 @@ function App() {
             <p className="text-sm text-gray-500 mb-3">{char.description}</p>
           </div>
           <div className="flex justify-between mt-auto space-x-2">
-            {/* Ver botão */}
+            {/* View button */}
             <button
               onClick={() => handleView(char.id)}
               className="flex items-center gap-1 bg-purple-300 hover:bg-purple-400 text-white text-xs px-3 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-150"
@@ -156,7 +156,7 @@ function App() {
               </svg>
               Ver
             </button>
-            {/* Editar botão */}
+            {/* Edit button */}
             <button
               onClick={() => handleEdit(char.id)}
               className="flex items-center gap-1 bg-purple-500 hover:bg-purple-400 text-white text-xs px-3 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 transition duration-150"
@@ -166,7 +166,7 @@ function App() {
               </svg>
               Editar
             </button>
-            {/* Excluir botão */}
+            {/* Delete button */}
             <button
               onClick={() => handleDelete(char.id)}
               className="flex items-center gap-1 bg-purple-700 hover:bg-purple-600 text-white text-xs px-3 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-700 transition duration-150"
@@ -175,7 +175,7 @@ function App() {
                 <path d="M5.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5V14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5.5z"/>
                 <path d="M11 1.5a.5.5 0 0 1-.5-.5h-5A.5.5 0 0 1 5 1.5V2h6V1.5z"/>
               </svg>
-              Excluir
+              Delete
             </button>
           </div>
         </div>

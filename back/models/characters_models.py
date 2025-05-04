@@ -14,20 +14,3 @@ class CharactersModel(settings.DBBaseModel):
     origin = Column(String(256))
     description = Column(Text, nullable=True)  # Descrição do personagem
     image = Column(String(256), nullable=True)  # URL ou path da imagem do personagem
-    #group_id = Column(Integer, ForeignKey("VDGroups.id"))  # Chave estrangeira para o grupo
-
-    #group = relationship("GroupsModel", back_populates="characters", lazy="selectin")knbn
-    
-    
-
-
-
-# class GroupsModel(settings.DBBaseModel):
-#     __tablename__ = "VDGroups"  # Grupos como "Família Salvatore", "Bruxas", "Doppelgängers", etc.
-
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     name = Column(String(256), nullable=False)  # Nome do grupo
-#     description = Column(Text, nullable=True)  # Breve descrição do grupo
-#     image = Column(String(256), nullable=True)  # Imagem representativa do grupo
-
-#     characters = relationship("CharactersModel", back_populates="group", lazy="selectin")
