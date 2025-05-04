@@ -13,9 +13,9 @@ async def popular():
             name="Elena Gilbert",
             age=18,
             height=1.65,
-            role="Protagonista",
+            role="Protagonist",
             origin="Mystic Falls",
-            description="Estudante envolvida com vampiros",
+            description="High school student caught in the world of vampires.",
             image="https://link-da-imagem/elena.jpg"
         )
 
@@ -23,9 +23,9 @@ async def popular():
             name="Damon Salvatore",
             age=170,
             height=1.80,
-            role="Vampiro",
+            role="Vampire",
             origin="Mystic Falls",
-            description="Irmão de Stefan, personalidade sarcástica",
+            description="Stefan's brother, known for his sarcastic and unpredictable nature.",
             image="https://link-da-imagem/damon.jpg"
         )
 
@@ -33,9 +33,9 @@ async def popular():
             name="Stefan Salvatore",
             age=170,
             height=1.78,
-            role="Vampiro",
+            role="Vampire",
             origin="Mystic Falls",
-            description="Irmão de Damon, mais calmo e racional",
+            description="Damon's brother, calm and rational with a strong moral compass.",
             image="https://link-da-imagem/stefan.jpg"
         )
 
