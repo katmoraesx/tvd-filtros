@@ -1,16 +1,14 @@
-from core.configs import settings  # Base correta
-from sqlalchemy import Column, String, Integer, Text, ForeignKey, Float
-from sqlalchemy.orm import relationship
+from core.configs import DBBaseModel  # IMPORTA DBBaseModel DIRETO, NÃO settings
+from sqlalchemy import Column, String, Integer, Text, Float
 
-
-class CharactersModel(settings.DBBaseModel):
-    __tablename__ = "VDCharacters"  # Personagens principais
+class CharactersModel(DBBaseModel):
+    __tablename__ = "VDCharacters"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(256), nullable=False)  # Nome do personagem
+    name = Column(String(256), nullable=False)
     age = Column(Integer())
     height = Column(Float())
     role = Column(String(256))
     origin = Column(String(256))
-    description = Column(Text, nullable=True)  # Descrição do personagem
-    image = Column(String(256), nullable=True)  # URL ou path da imagem do personagem
+    description = Column(Text, nullable=True)
+    image = Column(String(256), nullable=True)

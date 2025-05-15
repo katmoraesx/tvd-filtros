@@ -21,7 +21,8 @@ app.add_middleware(
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 # Isso garante que funcione tanto com `python main.py` quanto com `uvicorn main:app --reload`
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="info", reload=True)
+#if __name__ == "__main__":
+   # import uvicorn
+   # uvicorn.run("main:app", host="0.0.0.0", port=8001, log_level="info", reload=True)
+
 
