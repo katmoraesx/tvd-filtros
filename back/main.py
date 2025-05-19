@@ -2,12 +2,12 @@ from fastapi import FastAPI
 from core.configs import settings
 from api.v1.api import api_router
 
-
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="API personagens de tvd")
+# IMPORTANTE: isso importa os modelos para garantir que as tabelas sejam registradas
+from models import characters_models, groups_models
 
-# CORS settings para permitir chamadas do front-end
+app = FastAPI(title="API personagens de TVD")
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,12 +17,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Incluindo as rotas da API
+# Inclui as rotas dos personagens e dos grupos
 app.include_router(api_router, prefix=settings.API_V1_STR)
-
-# Isso garante que funcione tanto com `python main.py` quanto com `uvicorn main:app --reload`
-#if __name__ == "__main__":
-   # import uvicorn
-   # uvicorn.run("main:app", host="0.0.0.0", port=8001, log_level="info", reload=True)
-
-
