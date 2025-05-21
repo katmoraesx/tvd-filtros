@@ -2,21 +2,28 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import BannerImage from "../public/banner-copy.jpg";
 
+const GROUPS = ["Todos", "Vampiros", "Lobos", "Bruxas", "Caçadores", "Humanos"];
+
 function App() {
   const [characters, setCharacters] = useState([]);
-
+  const [selectedGroup, setSelectedGroup] = useState("Todos");
   useEffect(() => {
+    const fetchCharacters = async () => {
+      try {
+        const url =
+          selectedGroup === "Todos"
+            ? "http://127.0.0.1:8000/api/v1/characters/"
+            : `http://127.0.0.1:8000/api/v1/characters/?group=${selectedGroup}`;
+        const response = await axios.get(url);
+        setCharacters(response.data);
+      } catch (error) {
+        console.error("Error searching for characters:", error);
+      }
+    };
+  
     fetchCharacters();
-  }, []);
-
-  const fetchCharacters = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/api/v1/characters");
-      setCharacters(response.data);
-    } catch (error) {
-      console.error("Error searching for characters:", error);
-    }
-  };
+  }, [selectedGroup]);
+  
 
   const handleCreate = async () => {
     const name = prompt("Character name:");
@@ -25,7 +32,7 @@ function App() {
 
     if (name && description && image) {
       try {
-        const response = await axios.post("http://127.0.0.1:8000/api/v1/characters", {
+        const response = await axios.post("http://127.0.0.1:8000/api/v1/characters/", {
           name,
           description,
           image,
@@ -128,6 +135,26 @@ function App() {
           </div>
         </section>
       </main>
+
+      {/* 🔍 FILTROS POR GRUPO */}
+      <section className="px-8 max-w-7xl mx-auto mb-6">
+        <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+          {GROUPS.map((group) => (
+            <button
+              key={group}
+              onClick={() => setSelectedGroup(group)}
+              className={`px-4 py-2 rounded-full font-medium text-sm transition-all border 
+              ${
+                selectedGroup === group
+                  ? "bg-red-700 border-red-700 text-white"
+                  : "bg-[#1a1a1a] border-red-900 text-red-400 hover:bg-red-800 hover:text-white"
+              }`}
+            >
+              {group}
+            </button>
+          ))}
+        </div>
+      </section>
 
       <section className="p-8 max-w-7xl mx-auto">
         <h2 className="text-2xl font-bold mb-6 border-b border-red-700 pb-2 text-red-400">Characters</h2>

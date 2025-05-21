@@ -18,4 +18,5 @@ app.add_middleware(
 )
 
 # Inclui as rotas dos personagens e dos grupos
-app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router, prefix="/api/v1")
+

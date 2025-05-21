@@ -1,17 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
+from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 
 from core.deps import get_session
 from models.groups_models import GroupsModel
 from schemas.groups_schemas import GroupSchemaCreate, GroupSchemaRead, GroupSchemaUpdate
-from sqlalchemy.future import select
 
 router = APIRouter()
 
 @router.post("/", response_model=GroupSchemaRead, status_code=status.HTTP_201_CREATED)
 async def create_group(group: GroupSchemaCreate, db: AsyncSession = Depends(get_session)):
-    new_group = GroupsModel(**group.dict())
+    data = group.dict()
+    # Permitir descrição, não remover, caso queira guardar
+    new_group = GroupsModel(**data)
     db.add(new_group)
     await db.commit()
     await db.refresh(new_group)
@@ -24,7 +27,11 @@ async def list_groups(db: AsyncSession = Depends(get_session)):
 
 @router.get("/{group_id}", response_model=GroupSchemaRead)
 async def get_group(group_id: int, db: AsyncSession = Depends(get_session)):
-    result = await db.execute(select(GroupsModel).filter_by(id=group_id))
+    result = await db.execute(
+        select(GroupsModel)
+        .options(selectinload(GroupsModel.characters))  # Carregar personagens relacionados
+        .filter_by(id=group_id)
+    )
     group = result.scalar_one_or_none()
     if not group:
         raise HTTPException(status_code=404, detail="Grupo não encontrado")
@@ -37,7 +44,9 @@ async def update_group(group_id: int, group_data: GroupSchemaUpdate, db: AsyncSe
     if not group:
         raise HTTPException(status_code=404, detail="Grupo não encontrado")
 
-    for key, value in group_data.dict(exclude_unset=True).items():
+    data = group_data.dict(exclude_unset=True)
+    # Não remova description, atualize caso venha
+    for key, value in data.items():
         setattr(group, key, value)
 
     await db.commit()
