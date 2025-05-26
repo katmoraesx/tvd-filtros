@@ -1,23 +1,27 @@
-from pydantic import BaseModel
-from typing import Optional
+from __future__ import annotations
+from pydantic import BaseModel, Field
+from typing import Optional, List
 from .characters_schemas import CharacterSchema
 
 
-# 🔹 Schema de leitura
+# 🔹 Schema para leitura (inclui personagens)
 class GroupSchemaRead(BaseModel):
     id: int
     name: str
-    description: Optional[str] = None  # mantém para poder ler e enviar na API
+    description: Optional[str] = None
+    characters: List[CharacterSchema] = Field(default_factory=list)  # Lista de personagens no grupo
 
     class Config:
         orm_mode = True
 
-# 🔹 Schema de criação
+
+# 🔹 Schema para criação
 class GroupSchemaCreate(BaseModel):
     name: str
-    description: Optional[str] = None  # mantém para receber na API, mas não salva no banco
+    description: Optional[str] = None
 
-# 🔹 Schema de atualização
+
+# 🔹 Schema para atualização
 class GroupSchemaUpdate(BaseModel):
     name: Optional[str] = None
-    description: Optional[str] = None  # mantém para receber na API, mas não salva no banco
+    description: Optional[str] = None

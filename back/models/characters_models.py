@@ -1,6 +1,10 @@
+# models/characters_models.py
+
 from core.database import DBBaseModel
-from sqlalchemy import Column, Integer, String, Text, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Float
 from sqlalchemy.orm import relationship
+from models.association_models import characters_groups
+
 
 class CharactersModel(DBBaseModel):
     __tablename__ = "VDCharacters"
@@ -14,5 +18,4 @@ class CharactersModel(DBBaseModel):
     description = Column(Text, nullable=True)
     image = Column(String(256), nullable=True)
 
-    group_id = Column(Integer, ForeignKey("VDGroups.id"), nullable=True)
-    group = relationship("GroupsModel", back_populates="characters")
+    groups = relationship("GroupsModel", secondary=characters_groups, back_populates="characters")

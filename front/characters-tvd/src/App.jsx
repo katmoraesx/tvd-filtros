@@ -7,28 +7,35 @@ const GROUPS = ["Todos", "Vampiros", "Lobos", "Bruxas", "Caçadores", "Humanos"]
 function App() {
   const [characters, setCharacters] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState("Todos");
+
   useEffect(() => {
     const fetchCharacters = async () => {
       try {
         const url =
           selectedGroup === "Todos"
             ? "http://127.0.0.1:8000/api/v1/characters/"
-            : `http://127.0.0.1:8000/api/v1/characters/?group=${selectedGroup}`;
+            : `http://127.0.0.1:8000/api/v1/characters/?grupo=${selectedGroup}`;
         const response = await axios.get(url);
         setCharacters(response.data);
       } catch (error) {
         console.error("Error searching for characters:", error);
       }
     };
-  
+
     fetchCharacters();
   }, [selectedGroup]);
-  
 
   const handleCreate = async () => {
     const name = prompt("Character name:");
     const description = prompt("Description:");
     const image = prompt("Image URL:");
+    const age = parseInt(prompt("Age:"), 10) || 0;
+    const height = parseFloat(prompt("Height (meters):")) || 0;
+    const role = prompt("Role:");
+    const origin = prompt("Origin:");
+    // Perguntar os grupos (exemplo simples, poderia ser um select melhor)
+    const groupsInput = prompt(`Groups (comma separated from: ${GROUPS.filter(g => g !== "Todos").join(", ")})`);
+    const groups = groupsInput ? groupsInput.split(",").map(g => g.trim()) : [];
 
     if (name && description && image) {
       try {
@@ -36,10 +43,11 @@ function App() {
           name,
           description,
           image,
-          age: 0,
-          height: 0,
-          role: "",
-          origin: ""
+          age,
+          height,
+          role,
+          origin,
+          groups,
         });
         setCharacters((prev) => [...prev, response.data]);
       } catch (error) {
@@ -50,17 +58,29 @@ function App() {
 
   const handleEdit = async (id) => {
     const character = characters.find((char) => char.id === id);
+    if (!character) return;
+
     const name = prompt("New name:", character.name);
     const description = prompt("New description:", character.description);
     const image = prompt("New image:", character.image);
+    const age = parseInt(prompt("New age:", character.age), 10) || 0;
+    const height = parseFloat(prompt("New height (meters):", character.height)) || 0;
+    const role = prompt("New role:", character.role);
+    const origin = prompt("New origin:", character.origin);
+    const groupsInput = prompt(`New groups (comma separated from: ${GROUPS.filter(g => g !== "Todos").join(", ")})`, character.groups?.join(", ") || "");
+    const groups = groupsInput ? groupsInput.split(",").map(g => g.trim()) : [];
 
     if (name && description && image) {
       try {
         const response = await axios.put(`http://127.0.0.1:8000/api/v1/characters/${id}`, {
-          ...character,
           name,
           description,
-          image
+          image,
+          age,
+          height,
+          role,
+          origin,
+          groups,
         });
         setCharacters((prev) =>
           prev.map((char) => (char.id === id ? response.data : char))
@@ -86,7 +106,7 @@ function App() {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/api/v1/characters/${id}`);
       const char = response.data;
-      alert(`Name: ${char.name}\nDescription: ${char.description}\nOrigin: ${char.origin}`);
+      alert(`Name: ${char.name}\nDescription: ${char.description}\nOrigin: ${char.origin}\nGroups: ${char.groups?.join(", ") || "None"}`);
     } catch (error) {
       console.error("Error when viewing character:", error);
     }

@@ -12,9 +12,7 @@ router = APIRouter()
 
 @router.post("/", response_model=GroupSchemaRead, status_code=status.HTTP_201_CREATED)
 async def create_group(group: GroupSchemaCreate, db: AsyncSession = Depends(get_session)):
-    data = group.dict()
-    # Permitir descrição, não remover, caso queira guardar
-    new_group = GroupsModel(**data)
+    new_group = GroupsModel(**group.dict())
     db.add(new_group)
     await db.commit()
     await db.refresh(new_group)
@@ -22,14 +20,16 @@ async def create_group(group: GroupSchemaCreate, db: AsyncSession = Depends(get_
 
 @router.get("/", response_model=List[GroupSchemaRead])
 async def list_groups(db: AsyncSession = Depends(get_session)):
-    result = await db.execute(select(GroupsModel))
+    result = await db.execute(
+        select(GroupsModel).options(selectinload(GroupsModel.characters))
+    )
     return result.scalars().all()
 
 @router.get("/{group_id}", response_model=GroupSchemaRead)
 async def get_group(group_id: int, db: AsyncSession = Depends(get_session)):
     result = await db.execute(
         select(GroupsModel)
-        .options(selectinload(GroupsModel.characters))  # Carregar personagens relacionados
+        .options(selectinload(GroupsModel.characters))  # Carrega personagens relacionados
         .filter_by(id=group_id)
     )
     group = result.scalar_one_or_none()
@@ -44,9 +44,7 @@ async def update_group(group_id: int, group_data: GroupSchemaUpdate, db: AsyncSe
     if not group:
         raise HTTPException(status_code=404, detail="Grupo não encontrado")
 
-    data = group_data.dict(exclude_unset=True)
-    # Não remova description, atualize caso venha
-    for key, value in data.items():
+    for key, value in group_data.dict(exclude_unset=True).items():
         setattr(group, key, value)
 
     await db.commit()
