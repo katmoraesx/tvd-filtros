@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import List, Optional
 
 class CharacterSchema(BaseModel):
     id: Optional[int]
@@ -24,4 +24,4 @@ class CharacterCreateSchema(BaseModel):
     origin: str
     description: str
     image: str
-    group_id: Optional[int] = None
+    groups: Optional[List[str]] = None

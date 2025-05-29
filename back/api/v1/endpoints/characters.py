@@ -71,8 +71,9 @@ async def put_character(character_id: int, character: CharacterCreateSchema, db:
         character_up.description = character.description
         character_up.image = character.image
 
-        result_groups = await db.execute(select(GroupsModel).filter(GroupsModel.name.in_(character.groups)))
-        character_up.groups = result_groups.scalars().all()
+        if character.groups:
+            result_groups = await db.execute(select(GroupsModel).filter(GroupsModel.name.in_(character.groups)))
+            character_up.groups = result_groups.scalars().all()
 
         await db.commit()
         await db.refresh(character_up)
