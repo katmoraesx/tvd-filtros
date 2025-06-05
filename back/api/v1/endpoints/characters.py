@@ -12,11 +12,20 @@ router = APIRouter()
 # Criar personagem com grupos
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=CharacterSchema)
 async def post_character(character: CharacterCreateSchema, db: AsyncSession = Depends(get_session)):
+    # Buscar grupos que existem no banco, baseando-se nos nomes enviados
     result = await db.execute(select(GroupsModel).filter(GroupsModel.name.in_(character.groups)))
-    groups = result.scalars().all()
+    groups_in_db = result.scalars().all()
+    existing_group_names = {g.name for g in groups_in_db}
 
-    if not groups and character.groups:
-        raise HTTPException(status_code=400, detail="Grupos não encontrados")
+    # Descobrir quais grupos enviados não existem no banco
+    invalid_groups = [g for g in character.groups if g not in existing_group_names]
+
+    if invalid_groups:
+        # Retornar erro mostrando exatamente quais grupos não foram encontrados
+        raise HTTPException(
+            status_code=400,
+            detail=f"Grupos não encontrados: {', '.join(invalid_groups)}"
+        )
 
     new_character = CharactersModel(
         name=character.name,
@@ -26,7 +35,7 @@ async def post_character(character: CharacterCreateSchema, db: AsyncSession = De
         origin=character.origin,
         description=character.description,
         image=character.image,
-        groups=groups
+        groups=groups_in_db
     )
 
     db.add(new_character)
@@ -62,24 +71,34 @@ async def put_character(character_id: int, character: CharacterCreateSchema, db:
     result = await db.execute(select(CharactersModel).filter(CharactersModel.id == character_id))
     character_up = result.scalars().first()
 
-    if character_up:
-        character_up.name = character.name
-        character_up.age = character.age
-        character_up.height = character.height
-        character_up.role = character.role
-        character_up.origin = character.origin
-        character_up.description = character.description
-        character_up.image = character.image
+    if not character_up:
+        raise HTTPException(detail="Personagem não encontrado", status_code=status.HTTP_404_NOT_FOUND)
 
-        if character.groups:
-            result_groups = await db.execute(select(GroupsModel).filter(GroupsModel.name.in_(character.groups)))
-            character_up.groups = result_groups.scalars().all()
+    character_up.name = character.name
+    character_up.age = character.age
+    character_up.height = character.height
+    character_up.role = character.role
+    character_up.origin = character.origin
+    character_up.description = character.description
+    character_up.image = character.image
 
-        await db.commit()
-        await db.refresh(character_up)
-        return character_up
+    if character.groups:
+        result_groups = await db.execute(select(GroupsModel).filter(GroupsModel.name.in_(character.groups)))
+        groups_in_db = result_groups.scalars().all()
+        existing_group_names = {g.name for g in groups_in_db}
+        invalid_groups = [g for g in character.groups if g not in existing_group_names]
 
-    raise HTTPException(detail="Personagem não encontrado", status_code=status.HTTP_404_NOT_FOUND)
+        if invalid_groups:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Grupos não encontrados: {', '.join(invalid_groups)}"
+            )
+
+        character_up.groups = groups_in_db
+
+    await db.commit()
+    await db.refresh(character_up)
+    return character_up
 
 # Deletar personagem
 @router.delete("/{character_id}", status_code=status.HTTP_204_NO_CONTENT)
